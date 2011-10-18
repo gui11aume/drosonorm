@@ -38,7 +38,7 @@
     # Print version control in the top-left corner.
     pos <- match.arg(arg=pos);
     info <- c(
-        paste("drosornom", packageDescription('drosonorm')$revision),
+        paste("drosornom", packageDescription('drosonorm')$Revision),
         date()
     );
     if (pos == "left") {
