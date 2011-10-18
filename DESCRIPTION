@@ -1,0 +1,9 @@
+Package: drosonorm
+Title: NimbleGen Drosophila array normalization
+Version: 0.1 
+Depends: vtrackR, methods
+Author: Ulrich Braunschweig, Guillaume Filion
+Maintainer: Guillaume Filion <guillaume.filion@gmail.com>
+LazyData: true
+Description: Provides functions for normalization, standardization and quality control for results of NimbleGen hybridization experiments.
+License: GPL (>=2)
