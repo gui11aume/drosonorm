@@ -77,10 +77,11 @@ loess.norm <- function(core.name, out.path, exp1.file, ctl1.file,
 
   # Write the norm file (change directory and turn off the
   # warning triggered by 'commentline').
+  MA <- vtag(MA);
 
   # Version tracking (the call contains the release).
   write.table(
-      vtag(MA), 
+      MA, 
       file = file.path(out.path, out.file),
       row.names = FALSE,
       quote = FALSE,

@@ -1,0 +1,2 @@
+export(NGprocess, loess.norm, norm2gff, plot.MA, scatterplot,
+   plot.acf.norm, plot.profile)
