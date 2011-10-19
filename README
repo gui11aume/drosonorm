@@ -1,0 +1,3 @@
+This is the drosonorm package for Drosophila array normalization. In its present state, it relies heavily on the specifications of a custom NimbleGen microarray used in the van Steensel lab. Those specifications are .rda files not included in the remote repository for reasons of disk space.
+
+At present, the only way to get these files is to ask them to me.
