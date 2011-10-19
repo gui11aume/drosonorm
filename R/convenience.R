@@ -51,3 +51,8 @@
     }
   }
 
+.escape <- function(string) {
+  # Assert that the sring is valid UNIX file name.
+  return (gsub("[][:space:]&%)(#`'\"!;:}{><,[]", "_", string));
+}
+

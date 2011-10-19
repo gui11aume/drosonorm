@@ -1,7 +1,12 @@
-plot.acf.norm <- function(core.name, name, intensity, norm, array1.name,
-    array2.name="", maxlag=200, cex, graph) {
+plot.acf.norm <- function(out.path=getwd(), core.name, name,
+    intensity, norm, array1.name, array2.name="", maxlag=200,
+    cex, graph) {
 
-  out.file <- paste(core.name,"_ACF_", .dtag(), ".png",sep="");
+  # Output file name.
+  out.file <- .escape(
+      paste(core.name,"_ACF_", .dtag(), ".png",sep=""));
+  out.file <- file.path(out.path, out.file);
+
   n.arrays <- ifelse(array2.name == "", 1, 2);
 
   if (n.arrays == 1) {

@@ -1,7 +1,10 @@
-plot.profile <- function(core.name, name, gff,
+plot.profile <- function(out.path=getwd(), core.name, name, gff,
     intensity, cex, graph) {
 
-  out.file <- paste(core.name, '_profiles_', .dtag(), '.png', sep='');
+  # Output file name.
+  out.file <- .escape(
+      paste(core.name, '_profiles_', .dtag(), '.png', sep=''));
+  out.file <- file.path(out.path, out.file);
 
   if (graph == 'x11') {
     png(file=out.file, width=1000, height=600);

@@ -1,16 +1,17 @@
 NGprocess <- function(
       files.table,
+      out.path = paste('out', .dtag(), sep="_"),
       platform = "GPL8471",
       release = c("dm3R5", "dm2R4"),
       normalize = TRUE,
-      plotFC = FALSE,
       GFF = TRUE,
       plotMA = TRUE,
       plotXY = TRUE,
       plotACF = TRUE,
       plotProfile = TRUE,
       graph = "ps",
-      cex = ifelse(graph == "ps", 1.8, 1)) {
+      cex = ifelse(graph == "ps", 1.8, 1)
+) {
 # Important: assume array names are of the form "CMF_123456_..."
 
   # Array specifications. Try to lazy-load data.
@@ -70,6 +71,12 @@ NGprocess <- function(
 #    cat("False-color images for",FCcounter,"arrays plotted.\n")
 #  }
 
+  # Create out.path if it does not exist.
+  if (!file.exists(out.path)) {
+    dir.create(out.path);
+    base::cat(paste("\nwriting output files in", out.path, "\n"));
+  }
+
   # Main loop: run over the lines of meta.
   for (i in 1:nrow(meta)) {
 
@@ -93,7 +100,7 @@ NGprocess <- function(
     # Example core name for two arrays: HP1_70.
     core.name <- paste(
         protname,
-        sub("%", "", meta$intensity[i]), # Remove '%' sign.
+        gsub("%", "", meta$intensity[i]), # Remove '%' sign.
         sep = "_"
     );
     # Add array name if only one.
@@ -106,87 +113,110 @@ NGprocess <- function(
       );
     }
 
-    base::cat(paste("\nprocessing:", meta$name[i],
-        meta$intensity, "\n\n"));
+    base::cat(paste("\n-- processing:", meta$name[i],
+        meta$intensity[i], "\n\n"));
 
     ### Normalization.
     if (normalize) {
-      base::cat("normalizing\n");
-      MAnorm <- loess.norm(
-          core.name = core.name,
-          out.path = getwd(),
-          exp1.file = meta$exp1[i],
-          ctl1.file = meta$ctl1[i],
-          exp2.file = meta$exp2[i],
-          ctl2.file = meta$ctl2[i],
-          marray = marray);
+      base::cat("normalizing...\n");
+      try(expr = 
+         MAnorm <- loess.norm(
+             out.path = out.path,
+             core.name = core.name,
+             exp1.file = meta$exp1[i],
+             ctl1.file = meta$ctl1[i],
+             exp2.file = meta$exp2[i],
+             ctl2.file = meta$ctl2[i],
+             marray = marray
+        )
+      );
     }
 
     # Format to gff.
     if (GFF) {
-      base::cat("gff file\n");
-      gff <- norm2gff(
-          core.name = core.name,
-          name = protname,
-          norm = MAnorm,  # Just created.
-          marray = marray);
+      base::cat("creating gff file...\n");
+      try(expr =
+         gff <- norm2gff(
+             out.path = out.path,
+             core.name = core.name,
+             name = protname,
+             norm = MAnorm,  # Just created.
+             marray = marray
+         )
+      );
     }
 
     ### various plots
     if (plotMA) {
-      base::cat("MA plot\n");
-      plot.MA(
-          core.name = core.name,
-          name = protname,
-          intensity = meta$intensity[i],
-          norm = MAnorm,
-          array1.name = array1.name,
-          array2.name = array2.name,
-          exp1spike = meta$exp1spike[i],
-          ctl1spike = meta$ctl1spike[i],
-          exp2spike = meta$exp2spike[i],
-          ctl2spike = meta$ctl2spike[i],
-          marray = marray,
-          cex = cex,
-          graph = graph);
+      base::cat("creating MA plot...\n");
+      try(expr =
+         plot.MA(
+             out.path = out.path,
+             core.name = core.name,
+             name = protname,
+             intensity = meta$intensity[i],
+             norm = MAnorm,
+             array1.name = array1.name,
+             array2.name = array2.name,
+             exp1spike = meta$exp1spike[i],
+             ctl1spike = meta$ctl1spike[i],
+             exp2spike = meta$exp2spike[i],
+             ctl2spike = meta$ctl2spike[i],
+             marray = marray,
+             cex = cex,
+             graph = graph
+         )
+      );
     }
 
     if (plotXY && (n.arrays == 2)) {
-      base::cat("scatter plot\n");
-      scatterplot(
-          core.name = core.name,
-          name = protname,
-          intensity = meta$intensity[i],
-          norm = MAnorm,
-          array1.name = array1.name,
-          array2.name = array2.name,
-          cex = cex,
-          graph = graph);
+      base::cat("creating scatter plot...\n");
+      try(
+         scatterplot(
+             out.path = out.path,
+             core.name = core.name,
+             name = protname,
+             intensity = meta$intensity[i],
+             norm = MAnorm,
+             array1.name = array1.name,
+             array2.name = array2.name,
+             cex = cex,
+             graph = graph
+         )
+      );
     }
 
     if (plotACF) {
-      base::cat("acf plot\n");
-      plot.acf.norm(
-          core.name = core.name,
-          name = protname,
-          intensity = meta$intensity[i],
-          norm = MAnorm,
-          array1.name = array1.name,
-          array2.name = array2.name,
-          maxlag = 200,
-          cex = cex,
-          graph = graph);
+      base::cat("creating acf plot...\n");
+      try(expr =
+         plot.acf.norm(
+             out.path = out.path,
+             core.name = core.name,
+             name = protname,
+             intensity = meta$intensity[i],
+             norm = MAnorm,
+             array1.name = array1.name,
+             array2.name = array2.name,
+             maxlag = 200,
+             cex = cex,
+             graph = graph
+        )
+      );
     }
 
     if (plotProfile) {
-      base::cat("profiles\n");
-      plot.profile(
-          core.name = core.name,
-          name = protname,
-          gff = gff,
-          intensity = meta$intensity[i],
-          cex = cex,
-          graph = graph);
+      base::cat("creating profiles...\n");
+      try(expr =
+         plot.profile(
+             out.path = out.path,
+             core.name = core.name,
+             name = protname,
+             gff = gff,
+             intensity = meta$intensity[i],
+             cex = cex,
+             graph = graph
+        )
+      );
     }
   }
 }

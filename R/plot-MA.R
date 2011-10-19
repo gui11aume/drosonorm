@@ -1,6 +1,12 @@
-plot.MA <- function(core.name, name, intensity, norm,
-    array1.name, array2.name, exp1spike, ctl1spike, exp2spike='',
-    ctl2spike='', marray, cex, graph, fast=50000) {
+plot.MA <- function(out.path=getwd(), core.name, name, intensity,
+    norm, array1.name, array2.name, exp1spike, ctl1spike,
+    exp2spike='', ctl2spike='', marray, cex, graph, fast=50000) {
+
+  # Output file name.
+  out.file <- .escape(
+      paste(paste(core.name, '_MA_', .dtag(), '.png', sep = '')));
+  out.file <- file.path(out.path, out.file);
+
 
   # Important for plot.panel to work:
   # 1. Reassign row.names.
@@ -15,9 +21,6 @@ plot.MA <- function(core.name, name, intensity, norm,
      norm <- rbind(norm[marray$spikes,],
          norm[sample(1:nrow(norm), size=fast),]);
   }
-
-  # Output file name.
-  out.file <- paste(paste(core.name, '_MA_', .dtag(), '.png', sep = ''));
 
   # Get the number of arrays.
   n.arrays <- ifelse(missing(array2.name) || array2.name == '', 1, 2);

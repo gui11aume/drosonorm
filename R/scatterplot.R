@@ -1,7 +1,11 @@
-scatterplot <- function(core.name, name, intensity, norm,
-    array1.name, array2.name, cex, graph) {
+scatterplot <- function(out.path=getwd(), core.name, name,
+    intensity, norm, array1.name, array2.name, cex, graph) {
 
-  file.out <- paste(core.name,'_XY_', .dtag(), '.png',sep='');
+  # Output file name.
+  file.out <- .escape(
+      paste(core.name,'_XY_', .dtag(), '.png',sep=''));
+  file.out <- file.path(out.path, file.out);
+
   xlim <- ylim <- range(
       norm[,grep('^M[12].norm$', colnames(norm))]
   );

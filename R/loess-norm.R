@@ -1,10 +1,12 @@
-loess.norm <- function(core.name, out.path, exp1.file, ctl1.file,
-    exp2.file='', ctl2.file='', marray) {
+loess.norm <- function(out.path=getwd(), core.name, exp1.file,
+    ctl1.file, exp2.file='', ctl2.file='', marray) {
 # Important: assume array names are of the form 'CMF_123456_...'
 
 
   # Output file name.
-  out.file <- paste(core.name, "_norm_", .dtag(), ".txt", sep="");
+  out.file <- .escape(
+      paste(core.name, "_norm_", .dtag(), ".txt", sep=""));
+  out.file <- file.path(out.path, out.file);
 
 
   #################################################
@@ -82,7 +84,7 @@ loess.norm <- function(core.name, out.path, exp1.file, ctl1.file,
   # Version tracking (the call contains the release).
   write.table(
       MA, 
-      file = file.path(out.path, out.file),
+      file = out.file,
       row.names = FALSE,
       quote = FALSE,
       sep = "\t"

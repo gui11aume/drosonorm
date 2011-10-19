@@ -1,7 +1,11 @@
-norm2gff <- function(core.name, name, norm, marray) {
+norm2gff <- function(out.path=getwd(), core.name, name,
+    norm, marray) {
 
   # Output file name.
-  out.file <- paste(core.name, "_", .dtag(), ".gff", sep="");
+  out.file <- .escape(
+     paste(core.name, "_", .dtag(), ".gff", sep=""));
+  out.file <- file.path(out.path, out.file);
+
 
   # Map probes in "norm" data.frame
   m <- merge(x=norm, y=marray$mapping, by="PROBE_ID");
