@@ -1,12 +1,6 @@
-loess.norm <- function(out.path=getwd(), core.name, exp1.file,
-    ctl1.file, exp2.file='', ctl2.file='', marray) {
+loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
+    ctl2.file='', marray) {
 # Important: assume array names are of the form 'CMF_123456_...'
-
-
-  # Output file name.
-  out.file <- .escape(
-      paste(core.name, "_norm_", .dtag(), ".txt", sep=""));
-  out.file <- file.path(out.path, out.file);
 
 
   #################################################
@@ -76,21 +70,22 @@ loess.norm <- function(out.path=getwd(), core.name, exp1.file,
     MA$M.norm <- round((MA$M1.norm + MA$M2.norm)/2, 3);
   }
 
+  # Save spikes and random probes in extraprobes for later.
+  row.names(MA) <- MA$PROBE_ID;
+  extraprobes <- MA[c(marray$spikes, marray$random),];
+  extraprobes$seqname <- NA;
+  extraprobes$start <- NA;
+  extraprobes$end <- NA;
 
-  # Write the norm file (change directory and turn off the
-  # warning triggered by 'commentline').
-  MA <- vtag(MA);
+  # Map the probes in the given release and sort.
+  # NB: this removes the double density, spikes and random probes...
+  MAnorm <- merge(x=MA, y=marray$mapping, by="PROBE_ID");
+  MAnorm <- MAnorm[order(MAnorm$seqname, MAnorm$start),];
+  # ... so we add random probes and spikes back.
+  MAnorm <- rbind(MAnorm, extraprobes);
 
-  # Version tracking (the call contains the release).
-  write.table(
-      MA, 
-      file = out.file,
-      row.names = FALSE,
-      quote = FALSE,
-      sep = "\t"
-  );
 
   # Return the normalized file to the pipeline.
-  return (MA);
+  return (vtag(MAnorm));
 
 }

@@ -84,7 +84,7 @@ plot.profile <- function(out.path=getwd(), core.name, name, gff,
   plot.panel(chrom='chr2R', xlim=xlim); 
   # Write the protein name in the top-left corner.
   text(x=xlim[1]/1000, y=ylim[2], paste(name, intensity), col='grey50',
-      cex=cex.graph*2, adj=c(0,0.5));
+      cex=cex.graph*1.75, adj=c(0,0.5));
 
   plot.panel(chrom='chr2L', xlim=c(13.75, 13.95)*1e6); # 2L hi-density
 

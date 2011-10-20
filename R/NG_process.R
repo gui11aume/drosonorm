@@ -3,7 +3,6 @@ NGprocess <- function(
       out.path = paste('out', .dtag(), sep="_"),
       platform = "GPL8471",
       release = c("dm3R5", "dm2R4"),
-      normalize = TRUE,
       GFF = TRUE,
       plotMA = TRUE,
       plotXY = TRUE,
@@ -53,24 +52,6 @@ NGprocess <- function(
   }
 
 
-  # TODO: put false-color plots in the pipeline.
-  # Make false-colors array images.
-#  if (plotFC) {     
-#    FCcounter <- 0
-#    for (i in 1:nrow(meta)) {
-#      # count the arrays by the presence of "Exp2" data.
-#      n.arrays <- ifelse(meta$Exp2[i] == "", 1, 2)
-#
-#      for (j in 1:n.arrays) {
-#       	# check if pairs files are present; first get pairs files for Exp[i]
-#       	channelfiles <- c(meta[i,Exp.ind[j]], meta[i,Ctl.ind[j]])
-#        falseColPlots(channelfiles[1],channelfiles[2],graph)
-#        FCcounter <- FCcounter + 1
-#      }
-#    }
-#    cat("False-color images for",FCcounter,"arrays plotted.\n")
-#  }
-
   # Create out.path if it does not exist.
   if (!file.exists(out.path)) {
     dir.create(out.path);
@@ -87,9 +68,9 @@ NGprocess <- function(
     n.arrays <- ifelse(meta$exp2[i] == "", 1, 2);
 
     # Get array names.
-  	array1.name <- sub("CMF_([0-9]+)_.*","\\1", meta$exp1[i]);
+  	 array1.name <- sub("CMF_([0-9]+)_.*","\\1", meta$exp1[i]);
 
-  	if (n.arrays == 2) {
+  	 if (n.arrays == 2) {
       array2.name <- sub("CMF_([0-9]+)_.*","\\1", meta$exp2[i]);
     }
     else {
@@ -116,34 +97,60 @@ NGprocess <- function(
     base::cat(paste("\n-- processing:", meta$name[i],
         meta$intensity[i], "\n\n"));
 
-    ### Normalization.
-    if (normalize) {
-      base::cat("normalizing...\n");
-      try(expr = 
-         MAnorm <- loess.norm(
-             out.path = out.path,
-             core.name = core.name,
-             exp1.file = meta$exp1[i],
-             ctl1.file = meta$ctl1[i],
-             exp2.file = meta$exp2[i],
-             ctl2.file = meta$ctl2[i],
-             marray = marray
-        )
+    ### Normalization (always).
+    base::cat("normalizing...\n");
+    MAnorm <- NULL;
+    try(expr = 
+       MAnorm <- loess.norm(
+           exp1.file = meta$exp1[i],
+           ctl1.file = meta$ctl1[i],
+           exp2.file = meta$exp2[i],
+           ctl2.file = meta$ctl2[i],
+           marray = marray
+      )
+    );
+    # Write norm data.frame to file.
+    if (!is.null(MAnorm)) {
+      # Output file name.
+      out.file <- .escape(
+          paste(core.name, "_norm_", .dtag(), ".txt", sep=""));
+      out.file <- file.path(out.path, out.file);
+      write.table(
+          MAnorm,
+          file = out.file,
+          row.names = FALSE,
+          quote = FALSE,
+          sep = "\t"
       );
     }
 
     # Format to gff.
     if (GFF) {
       base::cat("creating gff file...\n");
+      gff <- NULL;
       try(expr =
          gff <- norm2gff(
-             out.path = out.path,
-             core.name = core.name,
              name = protname,
-             norm = MAnorm,  # Just created.
-             marray = marray
+             core.name = core.name,
+             MAnorm = MAnorm  # Just created.
          )
       );
+      # Write gff data.frame to file.
+      if (!is.null(gff)) {
+        # Output file name.
+        out.file <- .escape(
+             paste(core.name, "_", .dtag(), ".gff", sep=""));
+        out.file <- file.path(out.path, out.file);
+        write.table(
+            gff,
+            file = out.file,
+            row.names = FALSE,
+            col.names = FALSE,
+            quote = FALSE,
+            sep = "\t"
+        );
+      }
+
     }
 
     ### various plots
@@ -191,6 +198,7 @@ NGprocess <- function(
       try(expr =
          plot.acf.norm(
              out.path = out.path,
+             marray = marray,
              core.name = core.name,
              name = protname,
              intensity = meta$intensity[i],

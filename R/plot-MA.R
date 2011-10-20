@@ -8,11 +8,6 @@ plot.MA <- function(out.path=getwd(), core.name, name, intensity,
   out.file <- file.path(out.path, out.file);
 
 
-  # Important for plot.panel to work:
-  # 1. Reassign row.names.
-  # 2. Define M column.
-  row.names(norm) <- norm$PROBE_ID;
-
   # Get plot limits.
   xlim <- range(norm[, grep('^A$|^A[12]', colnames(norm))]);
   ylim <- range(norm[, grep('^M.norm$|^M[12]', colnames(norm))]);
