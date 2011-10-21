@@ -132,7 +132,8 @@ NGprocess <- function(
          gff <- norm2gff(
              name = protname,
              core.name = core.name,
-             MAnorm = MAnorm  # Just created.
+             MAnorm = MAnorm,  # Just created.
+             marray = marray
          )
       );
       # Write gff data.frame to file.

@@ -84,8 +84,12 @@ loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
   # ... so we add random probes and spikes back.
   MAnorm <- rbind(MAnorm, extraprobes);
 
+  # Version tracking (vtrackR).
+  MAnorm <- vtag(MAnorm);
+  addcomment(MAnorm, "array platform", marray$name);
+  addcomment(MAnorm, "release", marray$release);
 
   # Return the normalized file to the pipeline.
-  return (vtag(MAnorm));
+  return (MAnorm);
 
 }

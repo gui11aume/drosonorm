@@ -1,4 +1,4 @@
-norm2gff <- function(name, core.name, MAnorm) {
+norm2gff <- function(name, core.name, MAnorm, marray) {
 
   # Make the GFF and write to disk.
   gff <- data.frame(
@@ -12,6 +12,11 @@ norm2gff <- function(name, core.name, MAnorm) {
       ".",
       MAnorm$PROBE_ID);
 
-  return (vtag(gff));
+  # Version tracking (vtrackR).
+  gff <- vtag(gff);
+  addcomment(gff, "array platform", marray$name);
+  addcomment(gff, "release", marray$release);
+
+  return (gff);
 
 }
