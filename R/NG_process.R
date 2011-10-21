@@ -188,7 +188,8 @@ NGprocess <- function(
              array1.name = array1.name,
              array2.name = array2.name,
              cex = cex,
-             graph = graph
+             graph = graph,
+             marray = marray
          )
       );
     }
