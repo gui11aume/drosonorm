@@ -234,6 +234,7 @@ plot.MA <- function(out.path=getwd(), core.name, name, intensity,
     plot.panel(
         A.name = 'A',
         M.name = 'M.norm', 
+        spikes = FALSE,
         title = paste("Array", array2.name, 'Mean normalized')
     );
   }
