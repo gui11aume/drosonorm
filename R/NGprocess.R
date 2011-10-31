@@ -27,6 +27,11 @@ NGprocess <- function(
   meta <- read.delim(files.table, colClasses="character",
       comment.char="#", stringsAsFactors=FALSE);
 
+  # Remove blank lines.
+  meta <- meta[
+      colSums(!apply(meta, 1, grepl, pattern="^[[:space:]]*$")) > 0
+  ,];
+
   # Make sure all required columns are present in the meta file
   # and turn them to lowercase.
   colnames(meta) <- .checknames(colnames(meta)) # Convenience function.
