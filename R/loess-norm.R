@@ -55,10 +55,14 @@ loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
     array2.name <- sub('CMF_([0-9]+)_.*','\\1', exp2.file);
     MA2 <- loess1array(exp2.file, ctl2.file);
 
+    # Sort on probe names (will sort on position later).
+    MA <- MA[order(MA$probes),];
+    MA2 <- MA2[order(MA2$probes),];
+
     # Early return (with NA) if rownames differ.
     if (!identical(MA[,1], MA2[,1])) {
-      warning(paste("rownames differ between files:", exp1.file,
-          ctl1.file, exp2.file, ctl2.file, "(not processing)"));
+      warning(paste("\nrownames differ between files:", exp1.file,
+          ctl1.file, exp2.file, ctl2.file, "(not processing)\n"));
       return (NA);
     }
 
