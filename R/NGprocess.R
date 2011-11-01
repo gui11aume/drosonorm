@@ -174,7 +174,7 @@ NGprocess <- function(
       try(expr =
          wigdf <- norm2wig(
              MAnorm = MAnorm,  # Just created.
-             marray = marray  # Just created.
+             marray = marray
          )
       );
       # Write wig data.frame to file.
@@ -185,6 +185,22 @@ NGprocess <- function(
         out.file <- file.path(out.path, out.file);
         # Explicitly write vheaer.
         base::cat(vheader(wigdf), file = out.file);
+        # Write the track definition line.
+        base::cat(
+          paste(
+            "track type=wiggle_0 name=",
+            meta$name[i],
+            " description=DamID profile of ",
+            meta$name[i],
+            " (probe-wise signal, release ",
+            marray$release,
+            ", microaaray platform ",
+            marray$name, ")\n",
+            sep = ""
+          ),
+          file = out.file,
+          append = TRUE
+        );
         for (seqname in unique(wigdf$seqname)) {
           base::cat(
             paste("variableStep chrom=", seqname, "\n", sep = ""),
