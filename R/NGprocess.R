@@ -167,7 +167,7 @@ NGprocess <- function(
       try(expr =
          wigdf <- norm2wig(
              MAnorm = MAnorm,  # Just created.
-             marray = marray,  # Just created.
+             marray = marray  # Just created.
          )
       );
       # Write wig data.frame to file.
