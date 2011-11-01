@@ -122,7 +122,7 @@ NGprocess <- function(
           paste(core.name, "_norm_", .dtag(), ".txt", sep=""));
       out.file <- file.path(out.path, out.file);
       write.table(
-          MAnorm,
+          format(MAnorm, scientific = FALSE),
           file = out.file,
           row.names = FALSE,
           quote = FALSE,
