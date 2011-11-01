@@ -224,7 +224,7 @@ NGprocess <- function(
 
     # dam format.
     if (DAM) {
-      base::cat("creating DAM file...\n");
+      base::cat("creating dam file...\n");
       dam <- NULL;
       try(expr =
          dam <- GATCagg(
