@@ -8,7 +8,7 @@ plot.acf.norm <- function(out.path=getwd(), marray, core.name,
   out.file <- file.path(out.path, out.file);
 
   # Keep only mapped probes.
-  norm <- norm[norm$PROBE_ID %in% marray$mapping$PROBE_ID,];
+  norm <- norm[norm$probeID %in% marray$mapping$probeID,];
 
   n.arrays <- ifelse(array2.name == "", 1, 2);
 

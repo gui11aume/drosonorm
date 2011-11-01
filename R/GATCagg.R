@@ -7,11 +7,11 @@ GATCagg <- function (MAnorm, marray,
 #   exclude: discard the probes with a GATC
 #   keep: Do not merge probes with a GATC in any fragment
 
-  if (marray$release == 5) {
+  if (marray$release == "dm3/R5") {
     lookup <- nimbleGenArrayGATCfragmentLookup.r5; # lazy loaded
     GATCmap <- DmelGATCfragmentsInfo.r5;           # lazy loaded
   }
-  else if (marray$release == 4) {
+  else if (marray$release == "dm2/R4") {
     lookup <- nimbleGenArrayGATCfragmentLookup.r4; # lazy loaded
     GATCmap <- DmelGATCfragmentsInfo.r4;           # lazy loaded
   }
@@ -40,7 +40,7 @@ GATCagg <- function (MAnorm, marray,
   merged <- merge(MAnorm, lookup);
   avg <- tapply(
             X = merged$M.norm,
-            INDEX = GATCfragment,
+            INDEX = merged$GATCfragment,
             FUN = mean,
             na.rm = TRUE
          );
@@ -48,7 +48,7 @@ GATCagg <- function (MAnorm, marray,
   return(vtag(
       merge(
           GATCmap,
-          data.frame(GATCfragment = names(agg), score = agg)
+          data.frame(GATCfragment = names(avg), score = avg)
       )
   ));
 

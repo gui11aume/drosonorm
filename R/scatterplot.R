@@ -8,7 +8,7 @@ scatterplot <- function(out.path=getwd(), core.name, name,
   file.out <- file.path(out.path, file.out);
 
   # Keep only mapped probes.
-  norm <- norm[norm$PROBE_ID %in% marray$mapping$PROBE_ID,];
+  norm <- norm[norm$probeID %in% marray$mapping$probeID,];
   if (fast) {
     norm <- norm[sample(1:nrow(norm), size=fast),];
   }

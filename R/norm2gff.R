@@ -15,7 +15,7 @@ norm2gff <- function(name, core.name, MAnorm, marray) {
       MAnorm$M.norm,
       ".",
       ".",
-      MAnorm$PROBE_ID);
+      MAnorm$probeID);
 
   # Version tracking (vtrackR).
   gff <- vtag(gff);
