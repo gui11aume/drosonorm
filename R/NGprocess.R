@@ -194,7 +194,7 @@ NGprocess <- function(
             meta$name[i],
             " (probe-wise signal, release ",
             marray$release,
-            ", microaaray platform ",
+            ", microarray platform ",
             marray$name, ")\n",
             sep = ""
           ),

@@ -46,11 +46,13 @@ GATCagg <- function (MAnorm, marray,
             na.rm = TRUE
          ), 3);
 
-  return(vtag(
-      merge(
-          GATCmap,
-          data.frame(fragmentID = names(avg), score = avg)
-      )
+  dam <- vtag(merge (
+    GATCmap,
+    data.frame(fragmentID = names(avg), score = avg)
   ));
+  addcomment(dam, "array platform", marray$name);
+  addcomment(dam, "release", marray$release);
+
+  return (dam);
 
 }

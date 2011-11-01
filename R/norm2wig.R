@@ -19,8 +19,8 @@ norm2wig <- function(MAnorm, marray) {
 
   # Version tracking (vtrackR).
   wigdf <- vtag(wigdf);
-  addcomment(MAnorm, "array platform", marray$name);
-  addcomment(MAnorm, "release", marray$release);
+  addcomment(wigdf, "array platform", marray$name);
+  addcomment(wigdf, "release", marray$release);
 
   return (wigdf);
 
