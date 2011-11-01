@@ -64,6 +64,13 @@ NGprocess <- function(
     base::cat(paste("\nwriting output files in", out.path, "\n"));
   }
 
+
+  # Turn off scientific notation for all outputs.
+  op <- options();
+  on.exit(expr = options(op));
+  options(scipen=10);
+
+
   # Main loop: run over the lines of meta.
   for (i in 1:nrow(meta)) {
 
@@ -122,7 +129,7 @@ NGprocess <- function(
           paste(core.name, "_norm_", .dtag(), ".txt", sep=""));
       out.file <- file.path(out.path, out.file);
       write.table(
-          format(MAnorm, scientific = FALSE),
+          MAnorm,
           file = out.file,
           row.names = FALSE,
           quote = FALSE,
@@ -150,7 +157,7 @@ NGprocess <- function(
         out.file <- file.path(out.path, out.file);
         write.table(
             # Explicitly turn off scientific notation.
-            format(gff, scientific = FALSE),
+            gff,
             file = out.file,
             row.names = FALSE,
             col.names = FALSE,
@@ -186,7 +193,7 @@ NGprocess <- function(
           ); 
           write.table(
             # Explicitly turn off scientific notation.
-            format(wigdf[wigdf[,1] == seqname,], scientific = FALSE),
+            wigdf[wigdf[,1] == seqname,],
             file = out.file,
             sep = " ",
             row.names = FALSE,
