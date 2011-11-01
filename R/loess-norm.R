@@ -47,7 +47,7 @@ loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
 
   if (exp2.file == '') {
     # There is one array.
-    names(MA) <- c("PROBE_ID", "exp1", "ctl1", "A", "M", "M.norm");
+    names(MA) <- c("probeID", "exp1", "ctl1", "A", "M", "M.norm");
   }
 
   else {
@@ -67,7 +67,7 @@ loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
     }
 
     MA <- data.frame(MA[1:3], MA2[,2:3], MA[,4:6], MA2[,4:6]);
-    names(MA) <- c("PROBE_ID", "exp1", "ctl1", "exp2", "ctl2",
+    names(MA) <- c("probeID", "exp1", "ctl1", "exp2", "ctl2",
         "A1", "M1", "M1.norm", "A2", "M2", "M2.norm");
     # Average M and A.
     MA$A <- round((MA$A1 + MA$A2)/2, 3);
@@ -75,7 +75,7 @@ loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
   }
 
   # Save spikes and random probes in extraprobes for later.
-  row.names(MA) <- MA$PROBE_ID;
+  row.names(MA) <- MA$probeID;
   extraprobes <- MA[c(marray$spikes, marray$random),];
   extraprobes$seqname <- NA;
   extraprobes$start <- NA;
@@ -83,7 +83,7 @@ loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
 
   # Map the probes in the given release and sort.
   # NB: this removes the double density, spikes and random probes...
-  MAnorm <- merge(x=MA, y=marray$mapping, by="PROBE_ID");
+  MAnorm <- merge(x=MA, y=marray$mapping, by="probeID");
   MAnorm <- MAnorm[order(MAnorm$seqname, MAnorm$start),];
   # ... so we add random probes and spikes back.
   MAnorm <- rbind(MAnorm, extraprobes);

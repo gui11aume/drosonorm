@@ -5,6 +5,7 @@ NGprocess <- function(
       release = c("dm3R5", "dm2R4"),
       GFF = TRUE,
       WIG = TRUE,
+      DAM = TRUE,
       plotMA = TRUE,
       plotXY = TRUE,
       plotACF = TRUE,
@@ -156,7 +157,6 @@ NGprocess <- function(
              paste(core.name, "_", .dtag(), ".gff", sep=""));
         out.file <- file.path(out.path, out.file);
         write.table(
-            # Explicitly turn off scientific notation.
             gff,
             file = out.file,
             row.names = FALSE,
@@ -219,6 +219,32 @@ NGprocess <- function(
             append = TRUE
           );
         }
+      }
+    }
+
+    # dam format.
+    if (DAM) {
+      base::cat("creating DAM file...\n");
+      dam <- NULL;
+      try(expr =
+         dam <- GATCagg(
+             MAnorm = MAnorm,  # Just created.
+             marray = marray
+         )
+      );
+      # Write wig data.frame to file.
+      if (!is.null(dam)) {
+        # Output file name.
+        out.file <- .escape(
+             paste(core.name, "_", .dtag(), ".dam", sep=""));
+        out.file <- file.path(out.path, out.file);
+        write.table(
+          dam,
+          file = out.file,
+          row.names = FALSE,
+          quote = FALSE,
+          sep = "\t"
+        );
       }
     }
 
