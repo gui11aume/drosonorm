@@ -4,6 +4,7 @@ NGprocess <- function(
       platform = "GPL8471",
       release = c("dm3R5", "dm2R4"),
       GFF = TRUE,
+      WIG = TRUE,
       plotMA = TRUE,
       plotXY = TRUE,
       plotACF = TRUE,
@@ -102,7 +103,7 @@ NGprocess <- function(
     base::cat(paste("\n-- processing:", meta$name[i],
         meta$intensity[i], "\n\n"));
 
-    ### Normalization (always).
+    ## -- Normalization (always). --
     base::cat("normalizing...\n");
     MAnorm <- NULL;
     try(expr = 
@@ -129,7 +130,7 @@ NGprocess <- function(
       );
     }
 
-    # Format to gff.
+    # gff format.
     if (GFF) {
       base::cat("creating gff file...\n");
       gff <- NULL;
@@ -148,7 +149,8 @@ NGprocess <- function(
              paste(core.name, "_", .dtag(), ".gff", sep=""));
         out.file <- file.path(out.path, out.file);
         write.table(
-            gff,
+            # Explicitly turn off scientific notation.
+            format(gff, scientific = FALSE),
             file = out.file,
             row.names = FALSE,
             col.names = FALSE,
@@ -156,8 +158,47 @@ NGprocess <- function(
             sep = "\t"
         );
       }
-
     }
+
+    # wig format.
+    if (WIG) {
+      base::cat("creating wig file...\n");
+      wigdf <- NULL;
+      try(expr =
+         wigdf <- norm2wig(
+             MAnorm = MAnorm,  # Just created.
+             marray = marray,  # Just created.
+         )
+      );
+      # Write wig data.frame to file.
+      if (!is.null(wigdf)) {
+        # Output file name.
+        out.file <- .escape(
+             paste(core.name, "_", .dtag(), ".wig", sep=""));
+        out.file <- file.path(out.path, out.file);
+        # Explicitly write vheaer.
+        base::cat(vheader(wigdf), file = out.file);
+        for (seqname in unique(wigdf$seqname)) {
+          base::cat(
+            paste("variableStep chrom=", seqname, "\n", sep = ""),
+            file = output,
+            append = TRUE
+          ); 
+          write.table(
+            # Explicitly turn off scientific notation.
+            format(wigdf[wigdf[,1] == seqname,], scientific = FALSE),
+            file = out.file,
+            sep = " ",
+            row.names = FALSE,
+            col.names = FALSE,
+            quote = FALSE,
+            dec = ".",
+            append = TRUE
+          );
+        }
+      }
+    }
+
 
     ### various plots
     if (plotMA) {
