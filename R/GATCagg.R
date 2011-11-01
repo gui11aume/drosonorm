@@ -38,12 +38,13 @@ GATCagg <- function (MAnorm, marray,
   }
 
   merged <- merge(MAnorm, lookup);
-  avg <- tapply(
+  # Rounding quickens read from disk tremendously.
+  avg <- round(tapply(
             X = merged$M.norm,
             INDEX = merged$GATCfragment,
             FUN = mean,
             na.rm = TRUE
-         );
+         ), 3);
 
   return(vtag(
       merge(
