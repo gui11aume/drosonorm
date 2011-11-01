@@ -48,7 +48,7 @@ GATCagg <- function (MAnorm, marray,
   return(vtag(
       merge(
           GATCmap,
-          data.frame(GATCfragment = names(avg), score = avg)
+          data.frame(fragmentID = names(avg), score = avg)
       )
   ));
 
