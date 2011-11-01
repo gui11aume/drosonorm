@@ -15,10 +15,10 @@ norm2wig <- function(MAnorm, marray) {
   );
 
   # Remove NAs
-  wigdf <- wigdf[complete.cases(wigdf)];
+  wigdf <- wigdf[complete.cases(wigdf),];
 
   # Version tracking (vtrackR).
-  wigdf <- vtg(wigdf);
+  wigdf <- vtag(wigdf);
   addcomment(MAnorm, "array platform", marray$name);
   addcomment(MAnorm, "release", marray$release);
 

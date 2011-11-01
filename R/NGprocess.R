@@ -181,7 +181,7 @@ NGprocess <- function(
         for (seqname in unique(wigdf$seqname)) {
           base::cat(
             paste("variableStep chrom=", seqname, "\n", sep = ""),
-            file = output,
+            file = out.file,
             append = TRUE
           ); 
           write.table(
