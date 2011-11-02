@@ -1,2 +1,12 @@
-export(NGprocess, loess.norm, norm2gff, norm2wig, GATCagg, plot.MA,
-   scatterplot, plot.acf.norm, plot.profile)
+export(NGprocess,
+  loess.norm,
+  norm2gff,
+  norm2wig,
+  GATCagg,
+  plot.MA,
+  scatterplot,
+  plot.acf.norm,
+  plot.profile,
+  mask.plasmid.bias,
+  plot.plasmid.bias
+)

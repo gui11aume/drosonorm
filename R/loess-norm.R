@@ -1,5 +1,5 @@
 loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
-    ctl2.file='', marray) {
+    ctl2.file='', mask=TRUE, gene, marray) {
 # Important: assume array names are of the form 'CMF_123456_...'
 
 
@@ -76,7 +76,10 @@ loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
 
   # Save spikes and random probes in extraprobes for later.
   row.names(MA) <- MA$probeID;
-  extraprobes <- MA[c(marray$spikes, marray$random),];
+  extraprobes <- subset(
+      x = MA,
+      subset = MA$probeID %in% c(marray$spikes, marray$random)
+  );
   extraprobes$seqname <- NA;
   extraprobes$start <- NA;
   extraprobes$end <- NA;
@@ -87,11 +90,19 @@ loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
   MAnorm <- MAnorm[order(MAnorm$seqname, MAnorm$start),];
   # ... so we add random probes and spikes back.
   MAnorm <- rbind(MAnorm, extraprobes);
+  
+  # Mask plasmid bias.
+  if (mask) {
+    MAnorm <- mask.plasmid.bias(MAnorm=MAnorm, gene=gene, marray=marray);
+  }
 
   # Version tracking (vtrackR).
   MAnorm <- vtag(MAnorm);
   addcomment(MAnorm, "array platform", marray$name);
   addcomment(MAnorm, "release", marray$release);
+  if (mask) {
+    addcomment(MAnorm, "plasmid bias mask", gene);
+  }
 
   # Return the normalized file to the pipeline.
   return (MAnorm);

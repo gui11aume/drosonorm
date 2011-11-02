@@ -56,3 +56,29 @@
   return (gsub("[][:space:]&%)(#`'\"!;:}{><,[]", "_", string));
 }
 
+
+.getgene <- function(gene, release) {
+# Get gene mapping from gene ID.
+
+  if (release == "dm3/R5") {
+    genes <- genes.r5.17                            # lazy loaded
+  }
+  else if (release == "dm2/R4") {
+    genes <- genes.r4.3                             # lazy loaded
+  }
+  else {
+    stop ("non supported release");
+  }
+
+  # Identify the gene (lazy loaded).
+  if (index <- match(gene, genes$geneID, nomatch = FALSE)) {
+    return (list(
+      seqname = genes$seqname[index],
+      start = genes$start[index],
+      end = genes$end[index]
+    ));
+  }
+  else {
+    return (NULL);
+  }
+}

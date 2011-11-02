@@ -3,9 +3,11 @@ NGprocess <- function(
       out.path = paste('out', .dtag(), sep="_"),
       platform = "GPL8471",
       release = c("dm3R5", "dm2R4"),
+      mask = TRUE,
       GFF = TRUE,
       WIG = TRUE,
       DAM = TRUE,
+      plotBias = TRUE,
       plotMA = TRUE,
       plotXY = TRUE,
       plotACF = TRUE,
@@ -75,8 +77,11 @@ NGprocess <- function(
   # Main loop: run over the lines of meta.
   for (i in 1:nrow(meta)) {
 
-    # Get the protein name.
+    # Get the protein name and gene.
     protname <- meta$name[i];
+    # TODO: make this clean.
+    pat <- grep("FBgn[0-9]{7}", meta[i,], value=TRUE);
+    gene <- sub(".*(FBgn[0-9]{7}).*", "\\1", pat)[1];
 
     # Count the arrays by the presence of "Exp2" data.
     n.arrays <- ifelse(meta$exp2[i] == "", 1, 2);
@@ -120,7 +125,9 @@ NGprocess <- function(
            ctl1.file = meta$ctl1[i],
            exp2.file = meta$exp2[i],
            ctl2.file = meta$ctl2[i],
-           marray = marray
+           marray = marray,
+           gene = gene,
+           mask = mask
       )
     );
     # Write norm data.frame to file.
@@ -250,6 +257,27 @@ NGprocess <- function(
 
 
     ### various plots
+    if (plotBias) {
+      base::cat("creating plasmid bias plot...\n");
+      try(expr =
+         plot.plasmid.bias(
+             out.path = out.path,
+             core.name = core.name,
+             name = protname,
+             intensity = meta$intensity[i],
+             norm = MAnorm,
+             array1.name = array1.name,
+             array2.name = array2.name,
+             marray = marray,
+             gene = gene,
+             cex = cex,
+             graph = graph
+         )
+      );
+    }
+
+
+
     if (plotMA) {
       base::cat("creating MA plot...\n");
       try(expr =

@@ -1,9 +1,9 @@
 norm2gff <- function(name, core.name, MAnorm, marray) {
 
   # Remove non mappable probes.
-  MAnorm <- MAnorm[
-      complete.cases(MAnorm[,c("seqname", "start", "end")]),
-  ];
+  MAnorm <- subset(MAnorm,
+      complete.cases(MAnorm[,c("seqname", "start", "end")])
+  );
 
   # Create the GFF and write to disk.
   gff <- data.frame(

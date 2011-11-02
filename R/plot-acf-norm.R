@@ -56,7 +56,7 @@ plot.acf.norm <- function(out.path=getwd(), marray, core.name,
   }
 
   print.name <- function() {
-    txt <- paste(name, sub("([^%])$", "\\1%", intensity));
+    txt <- paste(name, paste(sub("%$", "", intensity), "%", sep=""));
     mtext(text=txt, line=0.4, col="grey50", cex=1.5*cex);
   }
 
