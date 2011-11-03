@@ -1,5 +1,5 @@
 GATCagg <- function (MAnorm, marray,
-   GATCprobes = c("merge", "exclude", "keep")) {
+   GATCprobes = c("merge", "exclude", "keep"), targets=TRUE) {
 # Average the scores of the probes mapping to the same GATC fragment.
 
 # GATCprobes: specifies what to do with probes containing a GATC
@@ -46,10 +46,18 @@ GATCagg <- function (MAnorm, marray,
             na.rm = TRUE
          ), 3);
 
-  dam <- vtag(merge (
-    GATCmap,
-    data.frame(fragmentID = names(avg), score = avg)
-  ));
+  dam <- merge(GATCmap, data.frame(fragmentID=names(avg), score=avg));
+  if(targets) {
+    require(HMMt);
+    bdg <- bridge(dam[,c("seqname", "start", "end", "score")]);
+    fit <- BaumWelchT(
+        x = bdg$x,
+        series.length = bdg$series.length,
+        m = 3
+    );
+    boundstate <- which.max(fit$mu);
+    dam$bound <- 0 + (fit$ViterbiPath[bdg$nonvirtuals] == boundstate);
+  }
   addcomment(dam, "array platform", marray$name);
   addcomment(dam, "release", marray$release);
 

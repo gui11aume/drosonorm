@@ -1,21 +1,25 @@
 NGprocess <- function(
       files.table,
-      out.path = paste('out', .dtag(), sep="_"),
+      out.path = paste('drosonorm', .dtag(), sep="_"),
+      sortby = c("name", "filetype", "none"),
       platform = "GPL8471",
       release = c("dm3R5", "dm2R4"),
       mask = TRUE,
       GFF = TRUE,
       WIG = TRUE,
       DAM = TRUE,
+      targets = TRUE,
       plotBias = TRUE,
       plotMA = TRUE,
       plotXY = TRUE,
       plotACF = TRUE,
-      plotProfile = TRUE,
+      plotSample = TRUE,
       graph = "ps",
       cex = ifelse(graph == "ps", 1.8, 1)
 ) {
 # Important: assume array names are of the form "CMF_123456_..."
+
+  sortby <- match.arg(sortby);
 
   # Array specifications. Try to lazy-load data.
   release <- match.arg(release);
@@ -26,6 +30,7 @@ NGprocess <- function(
   else {
     stop(paste("array", array.object, "does not exist"));
   }
+
 
   # Read-in the pair table in 'meta' data.frame
   meta <- read.delim(files.table, colClasses="character",
@@ -133,9 +138,18 @@ NGprocess <- function(
     # Write norm data.frame to file.
     if (!is.null(MAnorm)) {
       # Output file name.
+      this.out.path <- switch(
+          EXPR = sortby,
+              "name" = file.path(out.path, protname),
+              "filetype" = file.path(out.path, "norm"),
+              "none" = out.path
+      );
+      if (!file.exists(this.out.path)) {
+        dir.create(this.out.path);
+      }
       out.file <- .escape(
           paste(core.name, "_norm_", .dtag(), ".txt", sep=""));
-      out.file <- file.path(out.path, out.file);
+      out.file <- file.path(this.out.path, out.file);
       write.table(
           MAnorm,
           file = out.file,
@@ -160,9 +174,18 @@ NGprocess <- function(
       # Write gff data.frame to file.
       if (!is.null(gff)) {
         # Output file name.
+        this.out.path <- switch(
+            EXPR = sortby,
+                "name" = file.path(out.path, protname),
+                "filetype" = file.path(out.path, "gff"),
+                "none" = out.path
+        );
+        if (!file.exists(this.out.path)) {
+          dir.create(this.out.path);
+        }
         out.file <- .escape(
              paste(core.name, "_", .dtag(), ".gff", sep=""));
-        out.file <- file.path(out.path, out.file);
+        out.file <- file.path(this.out.path, out.file);
         write.table(
             gff,
             file = out.file,
@@ -187,9 +210,18 @@ NGprocess <- function(
       # Write wig data.frame to file.
       if (!is.null(wigdf)) {
         # Output file name.
+        this.out.path <- switch(
+            EXPR = sortby,
+                "name" = file.path(out.path, protname),
+                "filetype" = file.path(out.path, "wig"),
+                "none" = out.path
+        );
+        if (!file.exists(this.out.path)) {
+          dir.create(this.out.path);
+        }
         out.file <- .escape(
              paste(core.name, "_", .dtag(), ".wig", sep=""));
-        out.file <- file.path(out.path, out.file);
+        out.file <- file.path(this.out.path, out.file);
         # Explicitly write vheaer.
         base::cat(vheader(wigdf), file = out.file);
         # Write the track definition line.
@@ -236,15 +268,25 @@ NGprocess <- function(
       try(expr =
          dam <- GATCagg(
              MAnorm = MAnorm,  # Just created.
-             marray = marray
+             marray = marray,
+             targets = targets
          )
       );
       # Write wig data.frame to file.
       if (!is.null(dam)) {
         # Output file name.
+        this.out.path <- switch(
+            EXPR = sortby,
+                "name" = file.path(out.path, protname),
+                "filetype" = file.path(out.path, "dam"),
+                "none" = out.path
+        );
+        if (!file.exists(this.out.path)) {
+          dir.create(this.out.path);
+        }
         out.file <- .escape(
              paste(core.name, "_", .dtag(), ".dam", sep=""));
-        out.file <- file.path(out.path, out.file);
+        out.file <- file.path(this.out.path, out.file);
         write.table(
           dam,
           file = out.file,
@@ -258,10 +300,19 @@ NGprocess <- function(
 
     ### various plots
     if (plotBias) {
+      this.out.path <- switch(
+          EXPR = sortby,
+              "name" = file.path(out.path, protname),
+              "filetype" = file.path(out.path, "plasmid-bias-plots"),
+              "none" = out.path
+      );
+      if (!file.exists(this.out.path)) {
+        dir.create(this.out.path);
+      }
       base::cat("creating plasmid bias plot...\n");
       try(expr =
          plot.plasmid.bias(
-             out.path = out.path,
+             out.path = this.out.path,
              core.name = core.name,
              name = protname,
              intensity = meta$intensity[i],
@@ -280,9 +331,18 @@ NGprocess <- function(
 
     if (plotMA) {
       base::cat("creating MA plot...\n");
+      this.out.path <- switch(
+          EXPR = sortby,
+              "name" = file.path(out.path, protname),
+              "filetype" = file.path(out.path, "MA-plots"),
+              "none" = out.path
+      );
+      if (!file.exists(this.out.path)) {
+        dir.create(this.out.path);
+      }
       try(expr =
          plot.MA(
-             out.path = out.path,
+             out.path = this.out.path,
              core.name = core.name,
              name = protname,
              intensity = meta$intensity[i],
@@ -302,9 +362,18 @@ NGprocess <- function(
 
     if (plotXY && (n.arrays == 2)) {
       base::cat("creating scatter plot...\n");
+      this.out.path <- switch(
+          EXPR = sortby,
+              "name" = file.path(out.path, protname),
+              "filetype" = file.path(out.path, "scatter-plots"),
+              "none" = out.path
+      );
+      if (!file.exists(this.out.path)) {
+        dir.create(this.out.path);
+      }
       try(
          scatterplot(
-             out.path = out.path,
+             out.path = this.out.path,
              core.name = core.name,
              name = protname,
              intensity = meta$intensity[i],
@@ -320,9 +389,18 @@ NGprocess <- function(
 
     if (plotACF) {
       base::cat("creating acf plot...\n");
+      this.out.path <- switch(
+          EXPR = sortby,
+              "name" = file.path(out.path, protname),
+              "filetype" = file.path(out.path, "acf-plots"),
+              "none" = out.path
+      );
+      if (!file.exists(this.out.path)) {
+        dir.create(this.out.path);
+      }
       try(expr =
          plot.acf.norm(
-             out.path = out.path,
+             out.path = this.out.path,
              marray = marray,
              core.name = core.name,
              name = protname,
@@ -337,11 +415,20 @@ NGprocess <- function(
       );
     }
 
-    if (plotProfile) {
+    if (plotSample) {
       base::cat("creating profiles...\n");
+      this.out.path <- switch(
+          EXPR = sortby,
+              "name" = file.path(out.path, protname),
+              "filetype" = file.path(out.path, "sample-plots"),
+              "none" = out.path
+      );
+      if (!file.exists(this.out.path)) {
+        dir.create(this.out.path);
+      }
       try(expr =
          plot.profile(
-             out.path = out.path,
+             out.path = this.out.path,
              core.name = core.name,
              name = protname,
              gff = gff,
