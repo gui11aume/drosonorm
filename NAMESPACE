@@ -1,3 +1,4 @@
+useDynLib(drosonorm);
 export(NGprocess,
   loess.norm,
   norm2gff,

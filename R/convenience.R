@@ -82,3 +82,13 @@
     return (NULL);
   }
 }
+
+.drosowhip <- function(filename) {
+# Call whiplace to find gene names.
+  .Call(
+    "whiplace",
+    file("keyfile.txt", open = "r"),
+    file(filename, open = "r"),
+    PACKAGE = "drosonorm"
+  );
+}
