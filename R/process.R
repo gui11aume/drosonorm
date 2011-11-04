@@ -93,14 +93,14 @@ process <- function(
     array1.name <- ifelse(
         grepl("^CMF_[0-9]+", meta$exp1[i]),
         sub("CMF_([0-9]+)_.*","\\1", meta$exp1[i]),
-        paste(meta$exp1[i], name[i], sep = "_")
+        paste(meta$exp1[i], meta$name[i], sep = "_")
     );
 
   	 if (n.arrays == 2) {
       array2.name <- ifelse(
           grepl("^CMF_[0-9]+", meta$exp2[i]),
           sub("CMF_([0-9]+)_.*","\\1", meta$exp2[i]),
-          paste(meta$exp2[i], name[i], sep = "_")
+          paste(meta$exp2[i], meta$name[i], sep = "_")
       );
     }
     else {
