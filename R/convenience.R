@@ -61,10 +61,10 @@
 # Get gene mapping from gene ID.
 
   if (release == "dm3/R5") {
-    genes <- genes.r5.17                            # lazy loaded
+    genes <- genes.r5.17;                           # lazy loaded
   }
   else if (release == "dm2/R4") {
-    genes <- genes.r4.3                             # lazy loaded
+    genes <- genes.r4.3;                            # lazy loaded
   }
   else {
     stop ("non supported release");
@@ -81,14 +81,4 @@
   else {
     return (NULL);
   }
-}
-
-.drosowhip <- function(filename) {
-# Call whiplace to find gene names.
-  .Call(
-    "whiplace",
-    file("keyfile.txt", open = "r"),
-    file(filename, open = "r"),
-    PACKAGE = "drosonorm"
-  );
 }

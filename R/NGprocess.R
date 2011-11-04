@@ -15,9 +15,7 @@ NGprocess <- function(
       plotACF = TRUE,
       plotSample = TRUE,
       graph = "ps",
-      cex = ifelse(graph == "ps", 1.8, 1)
-) {
-# Important: assume array names are of the form "CMF_123456_..."
+      cex = ifelse(graph == "ps", 1.8, 1)) {
 
   sortby <- match.arg(sortby);
 
@@ -84,18 +82,26 @@ NGprocess <- function(
 
     # Get the protein name and gene.
     protname <- meta$name[i];
-    # TODO: make this clean.
-    pat <- grep("FBgn[0-9]{7}", meta[i,], value=TRUE);
-    gene <- sub(".*(FBgn[0-9]{7}).*", "\\1", pat)[1];
+
 
     # Count the arrays by the presence of "Exp2" data.
     n.arrays <- ifelse(meta$exp2[i] == "", 1, 2);
 
     # Get array names.
-  	 array1.name <- sub("CMF_([0-9]+)_.*","\\1", meta$exp1[i]);
+
+    
+    array1.name <- ifelse(
+        grepl("^CMF_[0-9]+", meta$exp1[i]),
+        sub("CMF_([0-9]+)_.*","\\1", meta$exp1[i]),
+        paste(meta$exp1[i], name[i], sep = "_")
+    );
 
   	 if (n.arrays == 2) {
-      array2.name <- sub("CMF_([0-9]+)_.*","\\1", meta$exp2[i]);
+      array2.name <- ifelse(
+          grepl("^CMF_[0-9]+", meta$exp2[i]),
+          sub("CMF_([0-9]+)_.*","\\1", meta$exp2[i]),
+          paste(meta$exp2[i], name[i], sep = "_")
+      );
     }
     else {
       array2.name <- ""; # Empty string if not present.
@@ -121,6 +127,20 @@ NGprocess <- function(
     base::cat(paste("\n-- processing:", meta$name[i],
         meta$intensity[i], "\n\n"));
 
+    # Try to find the gene by FBgn identifier.
+    FBpattern <- grep("FBgn[0-9]{7}", meta[i,], value=TRUE);
+    if (length(FBpattern) == 1) {
+       gene <- sub(".*(FBgn[0-9]{7}).*", "\\1", FBpattern)[1];
+       base::cat("detected gene ID", gene, "\n");
+       this.mask <- mask;
+       this.plotBias <- plotBias;
+    }
+    else {
+       base::cat("no gene ID: skipping plasmid bias\n");
+       this.mask <- FALSE;
+       this.plotBias <- FALSE;
+    }
+
     ## -- Normalization (always). --
     base::cat("normalizing...\n");
     MAnorm <- NULL;
@@ -130,9 +150,11 @@ NGprocess <- function(
            ctl1.file = meta$ctl1[i],
            exp2.file = meta$exp2[i],
            ctl2.file = meta$ctl2[i],
+           array1.name = array1.name,
+           array2.name = array2.name,
            marray = marray,
            gene = gene,
-           mask = mask
+           mask = this.mask
       )
     );
     # Write norm data.frame to file.
@@ -150,6 +172,8 @@ NGprocess <- function(
       out.file <- .escape(
           paste(core.name, "_norm_", .dtag(), ".txt", sep=""));
       out.file <- file.path(this.out.path, out.file);
+      # Add the 'meta' line to the vheader.
+      addcomment(MAnorm, "meta data", paste(meta[i,], collapse=" "));
       write.table(
           MAnorm,
           file = out.file,
@@ -186,6 +210,8 @@ NGprocess <- function(
         out.file <- .escape(
              paste(core.name, "_", .dtag(), ".gff", sep=""));
         out.file <- file.path(this.out.path, out.file);
+        # Add the 'meta' line to the vheader.
+        addcomment(gff, "meta data", paste(meta[i,], collapse=" "));
         write.table(
             gff,
             file = out.file,
@@ -222,6 +248,8 @@ NGprocess <- function(
         out.file <- .escape(
              paste(core.name, "_", .dtag(), ".wig", sep=""));
         out.file <- file.path(this.out.path, out.file);
+        # Add the 'meta' line to the vheader.
+        addcomment(wigdf, "meta data", paste(meta[i,], collapse=" "));
         # Explicitly write vheaer.
         base::cat(vheader(wigdf), file = out.file);
         # Write the track definition line.
@@ -287,6 +315,8 @@ NGprocess <- function(
         out.file <- .escape(
              paste(core.name, "_", .dtag(), ".dam", sep=""));
         out.file <- file.path(this.out.path, out.file);
+        # Add the 'meta' line to the vheader.
+        addcomment(dam, "meta data", paste(meta[i,], collapse=" "));
         write.table(
           dam,
           file = out.file,
@@ -299,7 +329,7 @@ NGprocess <- function(
 
 
     ### various plots
-    if (plotBias) {
+    if (this.plotBias) {
       this.out.path <- switch(
           EXPR = sortby,
               "name" = file.path(out.path, protname),
@@ -316,7 +346,7 @@ NGprocess <- function(
              core.name = core.name,
              name = protname,
              intensity = meta$intensity[i],
-             norm = MAnorm,
+             MAnorm = MAnorm,
              array1.name = array1.name,
              array2.name = array2.name,
              marray = marray,
@@ -346,7 +376,7 @@ NGprocess <- function(
              core.name = core.name,
              name = protname,
              intensity = meta$intensity[i],
-             norm = MAnorm,
+             MAnorm = MAnorm,
              array1.name = array1.name,
              array2.name = array2.name,
              exp1spike = meta$exp1spike[i],
@@ -377,7 +407,7 @@ NGprocess <- function(
              core.name = core.name,
              name = protname,
              intensity = meta$intensity[i],
-             norm = MAnorm,
+             MAnorm = MAnorm,
              array1.name = array1.name,
              array2.name = array2.name,
              cex = cex,
@@ -405,7 +435,7 @@ NGprocess <- function(
              core.name = core.name,
              name = protname,
              intensity = meta$intensity[i],
-             norm = MAnorm,
+             MAnorm = MAnorm,
              array1.name = array1.name,
              array2.name = array2.name,
              maxlag = 200,
@@ -431,8 +461,9 @@ NGprocess <- function(
              out.path = this.out.path,
              core.name = core.name,
              name = protname,
-             gff = gff,
+             MAnorm = MAnorm,
              intensity = meta$intensity[i],
+             marray = marray,
              cex = cex,
              graph = graph
         )

@@ -1,6 +1,6 @@
-loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
-    ctl2.file='', mask=TRUE, gene, marray) {
-# Important: assume array names are of the form 'CMF_123456_...'
+loess.norm <- function(exp1.file, ctl1.file, exp2.file="",
+    ctl2.file="", array1.name, array2.name="", mask=TRUE, gene,
+    marray) {
 
 
   #################################################
@@ -12,10 +12,10 @@ loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
   # values, A value, raw M and normalized M.
 
     # Read in the two .pair files.
-    expt <- read.delim(exp.file, comment.char='#',
-        colClasses=c(rep('character',4),rep('numeric',7)));
-    ctrl <- read.delim(ctl.file, comment.char='#',
-        colClasses=c(rep('character',4),rep('numeric',7)));
+    expt <- read.delim(exp.file, comment.char="#",
+        colClasses=c(rep("character",4),rep("numeric",7)));
+    ctrl <- read.delim(ctl.file, comment.char="#",
+        colClasses=c(rep("character",4),rep("numeric",7)));
 
     # Compute M and A values.
     M <- log2(expt[,10] / ctrl[,10]);
@@ -24,7 +24,7 @@ loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
     # Loess-normalize (approximate trace-hat.).
     M.norm <- loess(
         M ~ A,
-        control = loess.control(trace.hat='approximate'),
+        control = loess.control(trace.hat="approximate"),
         na.action = na.omit
     )$residuals;
 
@@ -42,17 +42,15 @@ loess.norm <- function(exp1.file, ctl1.file, exp2.file='',
 
 
   # Normalize the first array.
-  array1.name <- sub('CMF_([0-9]+)_.*','\\1', exp1.file);
   MA <- loess1array(exp1.file, ctl1.file);
 
-  if (exp2.file == '') {
+  if (exp2.file == "") {
     # There is one array.
     names(MA) <- c("probeID", "exp1", "ctl1", "A", "M", "M.norm");
   }
 
   else {
     # There are two arrays.
-    array2.name <- sub('CMF_([0-9]+)_.*','\\1', exp2.file);
     MA2 <- loess1array(exp2.file, ctl2.file);
 
     # Sort on probe names (will sort on position later).

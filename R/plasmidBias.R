@@ -1,5 +1,5 @@
 plot.plasmid.bias <- function (out.path=getwd(), core.name, name, intensity,
-    norm, array1.name, array2.name, marray, gene, cex, graph) {
+    MAnorm, array1.name, array2.name, marray, gene, cex, graph) {
 # Plot the signal around the ORF used in DamID.
 
   # Output file name.
@@ -9,7 +9,7 @@ plot.plasmid.bias <- function (out.path=getwd(), core.name, name, intensity,
 
 
   # Get the number of panels to plot.
-  if ("M2" %in% colnames(norm)) {
+  if ("M2" %in% colnames(MAnorm)) {
     n.arrays <- 2;
     columns <- c("M1", "M2");
     arrays <- c(array1.name, array2.name);
@@ -51,7 +51,7 @@ plot.plasmid.bias <- function (out.path=getwd(), core.name, name, intensity,
 
   # Focus on the chromosome of interest.
   mapping <- subset(mapping, mapping$seqname == g$seqname);
-  scores <- subset(norm, norm$seqname == g$seqname);
+  scores <- subset(MAnorm, MAnorm$seqname == g$seqname);
 
   for (i in 1:n.arrays) {
     plot(
@@ -105,8 +105,7 @@ mask.plasmid.bias <- function (MAnorm, gene, marray) {
 
   # Mask the probes.
   masked.probes <- mapping$probeID[
-      (mapping$start > g$start & mapping$start < g$end) |
-      (mapping$end > g$start & mapping$end < g$end)
+      (mapping$start < g$end) & (mapping$end > g$start)
   ];
 
   MAnorm$M.norm[MAnorm$probeID %in% masked.probes] <- NA;

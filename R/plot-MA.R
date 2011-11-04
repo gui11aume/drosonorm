@@ -1,5 +1,5 @@
 plot.MA <- function(out.path=getwd(), core.name, name, intensity,
-    norm, array1.name, array2.name, exp1spike, ctl1spike,
+    MAnorm, array1.name, array2.name, exp1spike, ctl1spike,
     exp2spike="", ctl2spike="", marray, cex, graph, fast=50000) {
 
   # Output file name.
@@ -9,13 +9,13 @@ plot.MA <- function(out.path=getwd(), core.name, name, intensity,
 
 
   # Get plot limits.
-  xlim <- range(norm[,grep("^A$|^A[12]", names(norm))], na.rm=TRUE);
-  ylim <- range(norm[,grep("^M.norm$|^M[12]", names(norm))], na.rm=TRUE);
+  xlim <- range(MAnorm[,grep("^A$|^A[12]", names(MAnorm))], na.rm=TRUE);
+  ylim <- range(MAnorm[,grep("^M.norm$|^M[12]", names(MAnorm))], na.rm=TRUE);
 
   if (fast) {
-     norm <- rbind(
-         subset(norm, norm$probeID %in% marray$spikes),
-         subset(norm, 1:nrow(norm) %in% sample(1:nrow(norm), fast))
+     MAnorm <- rbind(
+         subset(MAnorm, MAnorm$probeID %in% marray$spikes),
+         subset(MAnorm, 1:nrow(MAnorm) %in% sample(1:nrow(MAnorm), fast))
      );
   }
 
@@ -132,10 +132,10 @@ plot.MA <- function(out.path=getwd(), core.name, name, intensity,
     plot(xlim, ylim, type="n", xlab="A", ylab="M", main=title);
 
     # Plot the probes.
-    points(norm[[A.name]], norm[[M.name]], pch=".");
+    points(MAnorm[[A.name]], MAnorm[[M.name]], pch=".");
 
     # Plot the random probes (in blue).
-    points(norm[marray$random, A.name], norm[marray$random, M.name],
+    points(MAnorm[marray$random, A.name], MAnorm[marray$random, M.name],
         pch=20, col="blue");
 
     # Plot the legend.
@@ -145,16 +145,16 @@ plot.MA <- function(out.path=getwd(), core.name, name, intensity,
 
     if (spikes) {
       # Plot the pikes (in red).
-      points(norm[marray$spikes, A.name], norm[marray$spikes, M.name],
+      points(MAnorm[marray$spikes, A.name], MAnorm[marray$spikes, M.name],
           pch=20, col="red");
       # Add text to the spikes.
-      text(norm[marray$spikes, A.name]+0.1, norm[marray$spikes, M.name],
+      text(MAnorm[marray$spikes, A.name]+0.1, MAnorm[marray$spikes, M.name],
           adj=0, col="red");
     }
   }
 
   if (n.arrays == 2) {
-    norm$M <- (norm$M1 + norm$M2) / 2;
+    MAnorm$M <- (MAnorm$M1 + MAnorm$M2) / 2;
   }
 
   # Start plotting.
@@ -168,7 +168,7 @@ plot.MA <- function(out.path=getwd(), core.name, name, intensity,
     );
 
     # Plot the loess line (in red).
-    points(norm$A, norm$M-norm$M.norm, col="red", pch=".");
+    points(MAnorm$A, MAnorm$M-MAnorm$M.norm, col="red", pch=".");
 
     # Print version control on the top-left corner.
     .print.vcontrol("left", cex=cex)
@@ -192,7 +192,7 @@ plot.MA <- function(out.path=getwd(), core.name, name, intensity,
     );
 
     # Plot the loess line (in red).
-    points(norm$A1, norm$M1-norm$M1.norm, col="red");
+    points(MAnorm$A1, MAnorm$M1-MAnorm$M1.norm, col="red");
 
     # Print version control on the top-left corner.
     .print.vcontrol("left", cex=cex)
@@ -206,7 +206,7 @@ plot.MA <- function(out.path=getwd(), core.name, name, intensity,
     );
 
     # Plot the loess line (in red).
-    points(norm$A2, norm$M2-norm$M2.norm, col="red");
+    points(MAnorm$A2, MAnorm$M2-MAnorm$M2.norm, col="red");
 
     # Mean 1+2 raw.
     plot.panel(

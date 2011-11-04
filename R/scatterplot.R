@@ -1,5 +1,5 @@
 scatterplot <- function(out.path=getwd(), core.name, name,
-    intensity, norm, array1.name, array2.name, cex, graph,
+    intensity, MAnorm, array1.name, array2.name, cex, graph,
     marray, fast=50000) {
 
   # Output file name.
@@ -8,13 +8,13 @@ scatterplot <- function(out.path=getwd(), core.name, name,
   file.out <- file.path(out.path, file.out);
 
   # Keep only mapped probes.
-  norm <- norm[norm$probeID %in% marray$mapping$probeID,];
+  MAnorm <- MAnorm[MAnorm$probeID %in% marray$mapping$probeID,];
   if (fast) {
-    norm <- norm[sample(1:nrow(norm), size=fast),];
+    MAnorm <- MAnorm[sample(1:nrow(MAnorm), size=fast),];
   }
 
   xlim <- ylim <- range(
-      norm[,grep('^M[12].norm$', colnames(norm))]
+      MAnorm[,grep('^M[12].norm$', colnames(MAnorm))]
   );
 
   if (graph == 'x11') {
@@ -46,13 +46,13 @@ scatterplot <- function(out.path=getwd(), core.name, name,
   );
 
   # Do the scatter plot.
-  points(norm$M1.norm, norm$M2.norm, cex=cex.point);
+  points(MAnorm$M1.norm, MAnorm$M2.norm, cex=cex.point);
 
   # Print version control
   .print.vcontrol("left", cex=cex);
 
   # Print correlation in the top-right corner.
-  r <- cor(norm$M1.norm, norm$M2.norm, use='pairwise.complete.obs');
+  r <- cor(MAnorm$M1.norm, MAnorm$M2.norm, use='pairwise.complete.obs');
   text(x=xlim[2], y=ylim[2], labels=paste("r =", round(r,2)),
       adj=1, cex=cex);
 

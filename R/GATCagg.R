@@ -58,6 +58,7 @@ GATCagg <- function (MAnorm, marray,
     boundstate <- which.max(fit$mu);
     dam$bound <- 0 + (fit$ViterbiPath[bdg$nonvirtuals] == boundstate);
   }
+  dam <- vtag(dam);
   addcomment(dam, "array platform", marray$name);
   addcomment(dam, "release", marray$release);
 

@@ -1,5 +1,5 @@
 plot.acf.norm <- function(out.path=getwd(), marray, core.name,
-    name, intensity, norm, array1.name, array2.name="",
+    name, intensity, MAnorm, array1.name, array2.name="",
     maxlag=200, cex, graph) {
 
   # Output file name.
@@ -8,7 +8,7 @@ plot.acf.norm <- function(out.path=getwd(), marray, core.name,
   out.file <- file.path(out.path, out.file);
 
   # Keep only mapped probes.
-  norm <- norm[norm$probeID %in% marray$mapping$probeID,];
+  MAnorm <- MAnorm[MAnorm$probeID %in% marray$mapping$probeID,];
 
   n.arrays <- ifelse(array2.name == "", 1, 2);
 
@@ -65,7 +65,7 @@ plot.acf.norm <- function(out.path=getwd(), marray, core.name,
 
   if (n.arrays == 1) {
     acf.1 <- acf1array(
-        x = norm$M.norm,
+        x = MAnorm$M.norm,
         main = paste("ACF of array", array1.name),
         col = "red"
     );
@@ -81,7 +81,7 @@ plot.acf.norm <- function(out.path=getwd(), marray, core.name,
   if (n.arrays == 2) {
     # Panel 1.
     acf.1 <- acf1array(
-        x = norm$M1.norm,
+        x = MAnorm$M1.norm,
         main = paste("ACF of array", array1.name),
         col = "red"
     );
@@ -92,7 +92,7 @@ plot.acf.norm <- function(out.path=getwd(), marray, core.name,
 
     # Panel 2.
     acf.2 <- acf1array(
-        x = norm$M2.norm,
+        x = MAnorm$M2.norm,
         main = paste("ACF of array", array2.name),
         col = "green"
     );
@@ -101,7 +101,7 @@ plot.acf.norm <- function(out.path=getwd(), marray, core.name,
 
     # Panel 3.
     acf.av <- acf1array(
-        x = norm$M.norm,
+        x = MAnorm$M.norm,
         main = "ACF of mean",
         col="black"
     );
