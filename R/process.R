@@ -137,6 +137,7 @@ process <- function(
     }
     else {
        base::cat("no gene ID: skipping plasmid bias\n");
+       gene <- NA;
        this.mask <- FALSE;
        this.plotBias <- FALSE;
     }
