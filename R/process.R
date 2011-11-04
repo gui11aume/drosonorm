@@ -1,4 +1,4 @@
-NGprocess <- function(
+process <- function(
       files.table,
       out.path = paste('drosonorm', .dtag(), sep="_"),
       sortby = c("name", "filetype", "none"),
@@ -182,6 +182,10 @@ NGprocess <- function(
           sep = "\t"
       );
     }
+    else {
+      base::cat("failed to normalize: skipping\n");
+      next;
+    }
 
     # gff format.
     if (GFF) {
@@ -220,6 +224,9 @@ NGprocess <- function(
             quote = FALSE,
             sep = "\t"
         );
+      }
+      else {
+        base::cat("  failed!\n");
       }
     }
 
@@ -287,6 +294,9 @@ NGprocess <- function(
           );
         }
       }
+      else {
+        base::cat("  failed!\n");
+      }
     }
 
     # dam format.
@@ -325,6 +335,9 @@ NGprocess <- function(
           sep = "\t"
         );
       }
+      else {
+        base::cat("  failed!\n");
+      }
     }
 
 
@@ -356,7 +369,6 @@ NGprocess <- function(
          )
       );
     }
-
 
 
     if (plotMA) {
