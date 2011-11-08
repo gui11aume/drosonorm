@@ -17,6 +17,13 @@ process <- function(
       graph = "ps",
       cex = ifelse(graph == "ps", 1.8, 1)) {
 
+
+  # ---- Turn off scientific notation for all ---- #
+  #          outputs and restore upon exit.        #
+  op <- options();
+  on.exit(expr = options(op));
+  options(scipen=10);
+
   sortby <- match.arg(sortby);
 
   # Array specifications. Try to lazy-load data.
@@ -71,13 +78,7 @@ process <- function(
   }
 
 
-  # Turn off scientific notation for all outputs.
-  op <- options();
-  on.exit(expr = options(op));
-  options(scipen=10);
-
-
-  # Main loop: run over the lines of meta.
+  # ---- Main loop: run over the lines of meta. ---- #
   for (i in 1:nrow(meta)) {
 
     # Get the protein name and gene.
@@ -283,8 +284,8 @@ process <- function(
             append = TRUE
           ); 
           vtrackR::write.table(
-            # Explicitly turn off scientific notation.
-            wigdf[wigdf[,1] == seqname,],
+            # Write only 2 columns of wigdf.
+            wigdf[wigdf[,1] == seqname,2:3],
             file = out.file,
             sep = " ",
             row.names = FALSE,

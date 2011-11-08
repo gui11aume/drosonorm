@@ -9,6 +9,7 @@ norm2wig <- function(MAnorm, marray) {
   # Remove unnecessary columns. For coordinates, leave only
   # "start" (in fact, "middle") positions.
   wigdf <- data.frame(
+    seqname = MAnorm$seqname,
     position = mid,
     score = MAnorm$M.norm
   );
