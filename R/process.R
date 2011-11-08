@@ -175,7 +175,7 @@ process <- function(
       out.file <- file.path(this.out.path, out.file);
       # Add the 'meta' line to the vheader.
       addcomment(MAnorm, "meta data", paste(meta[i,], collapse=" "));
-      write.table(
+      vtrackR::write.table(
           MAnorm,
           file = out.file,
           row.names = FALSE,
@@ -217,7 +217,7 @@ process <- function(
         out.file <- file.path(this.out.path, out.file);
         # Add the 'meta' line to the vheader.
         addcomment(gff, "meta data", paste(meta[i,], collapse=" "));
-        write.table(
+        vtrackR::write.table(
             gff,
             file = out.file,
             row.names = FALSE,
@@ -282,7 +282,7 @@ process <- function(
             file = out.file,
             append = TRUE
           ); 
-          write.table(
+          vtrackR::write.table(
             # Explicitly turn off scientific notation.
             wigdf[wigdf[,1] == seqname,],
             file = out.file,
@@ -328,7 +328,7 @@ process <- function(
         out.file <- file.path(this.out.path, out.file);
         # Add the 'meta' line to the vheader.
         addcomment(dam, "meta data", paste(meta[i,], collapse=" "));
-        write.table(
+        vtrackR::write.table(
           dam,
           file = out.file,
           row.names = FALSE,
