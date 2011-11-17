@@ -5,9 +5,9 @@ process <- function(
       platform = "GPL8471",
       release = c("dm3R5", "dm2R4"),
       mask = TRUE,
-      GFF = TRUE,
-      WIG = TRUE,
-      DAM = TRUE,
+      gff = TRUE,
+      wig = TRUE,
+      dam = TRUE,
       targets = TRUE,
       plotBias = TRUE,
       plotMA = TRUE,
@@ -190,7 +190,7 @@ process <- function(
     }
 
     # gff format.
-    if (GFF) {
+    if (gff) {
       base::cat("creating gff file...\n");
       gff <- NULL;
       try(expr =
@@ -233,7 +233,7 @@ process <- function(
     }
 
     # wig format.
-    if (WIG) {
+    if (wig) {
       base::cat("creating wig file...\n");
       wigdf <- NULL;
       try(expr =
@@ -302,7 +302,7 @@ process <- function(
     }
 
     # dam format.
-    if (DAM) {
+    if (dam) {
       base::cat("creating dam file...\n");
       dam <- NULL;
       try(expr =

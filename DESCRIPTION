@@ -1,6 +1,6 @@
 Package: drosonorm
 Title: NimbleGen Drosophila array normalization
-Version: 0.1 
+Version: 1.0-beta 
 Depends: vtrackR, methods
 Author: Ulrich Braunschweig, Aleksey Pindyurin, Guillaume Filion
 Maintainer: Guillaume Filion <guillaume.filion@gmail.com>
