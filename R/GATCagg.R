@@ -47,7 +47,7 @@ GATCagg <- function (MAnorm, marray,
          ), 3);
 
   dam <- merge(GATCmap, data.frame(fragmentID=names(avg), score=avg));
-  if(targets) {
+  if (targets) {
     require(HMMt);
     bdg <- bridge(dam[,c("seqname", "start", "end", "score")]);
     fit <- BaumWelchT(
@@ -61,6 +61,11 @@ GATCagg <- function (MAnorm, marray,
   dam <- vtag(dam);
   addcomment(dam, "array platform", marray$name);
   addcomment(dam, "release", marray$release);
+  if (targets) {
+    # Aleksey's suggestion to use the iterations as a coarse
+    # readout for the amout of noise in the profile.
+    addcomment(dam, "Baum-Welch iterations", fit$iterations)
+  }
 
   return (dam);
 

@@ -119,8 +119,6 @@ plot.MA <- function(out.path=getwd(), core.name, name, intensity,
 
 
 
-
-
   ##########################################
   ##          DRY  plot function          ##
   ##########################################
@@ -188,7 +186,7 @@ plot.MA <- function(out.path=getwd(), core.name, name, intensity,
         A.name = "A1",
         M.name = "M1",
         legend = spike.legend.1,
-        title = paste("Array", array2.name, intensity)
+        title = paste("Array", array1.name, intensity)
     );
 
     # Plot the loess line (in red).
