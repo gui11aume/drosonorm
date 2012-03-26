@@ -58,7 +58,7 @@ process <- function(
   allpairfiles <- c(unlist(meta[,Exp.ind]), unlist(meta[,Ctl.ind]));
   notfound <- which(allpairfiles != "" & ! file.exists(allpairfiles));
   # Stop if any pair file is not found.
-  if (any(notfound)) {
+  if (length(notfound) > 0) {
     if (length(notfound) > 20) {
       # If the string passed to stop() is too long, it is truncated.
       # Truncate manually and add "..." if more than 20 files not found.
